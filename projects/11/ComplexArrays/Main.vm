@@ -1,0 +1,99 @@
+function Main.main 3
+push local 1
+pop pointer 1
+push const 10
+call Array.new 1
+pop that 0
+push local 2
+pop pointer 1
+push const 5
+call Array.new 1
+pop that 0
+push local 3
+pop pointer 1
+push const 1
+call Array.new 1
+pop that 0
+push local 1
+push const 3
+add
+pop pointer 1
+push const 2
+pop that 0
+push local 1
+push const 4
+add
+pop pointer 1
+push const 8
+pop that 0
+push local 1
+push const 5
+add
+pop pointer 1
+push const 4
+pop that 0
+push local 2
+push local 1
+push const 3
+add
+push pointer 1
+pop temp 0
+pop pointer 1
+push that 0
+add
+pop pointer 1
+push local 1
+push const 3
+add
+push pointer 1
+pop temp 0
+pop pointer 1
+push that 0
+push const 3
+add
+pop that 0
+push local 1
+push local 2
+push local 1
+push const 3
+add
+push pointer 1
+pop temp 0
+pop pointer 1
+push that 0
+add
+push pointer 1
+pop temp 0
+pop pointer 1
+push that 0
+add
+pop pointer 1
+push local 1
+push local 1
+push const 5
+add
+push pointer 1
+pop temp 0
+pop pointer 1
+push that 0
+add
+push pointer 1
+pop temp 0
+pop pointer 1
+push that 0
+push local 2
+push const 7
+push local 1
+push const 3
+add
+push pointer 1
+pop temp 0
+pop pointer 1
+push that 0
+sub
+add
+push pointer 1
+pop temp 0
+pop pointer 1
+push that 0
+call Math.multiply 2

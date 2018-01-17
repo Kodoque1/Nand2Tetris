@@ -1,0 +1,91 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Central Processing unit (CPU).
+ * Consists of an ALU and a set of registers, designed to fetch and 
+ * execute instructions written in the Hack machine language.
+ * In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine 
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input 
+ * holds the value of this location. If the current instruction needs 
+ * to write a value to M, the value is placed in outM, the address 
+ * of the target location is placed in the addressM output, and the 
+ * writeM control bit is asserted. (When writeM=0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+ * they are affected instantaneously by the execution of the current 
+ * instruction. The addressM and pc outputs are clocked: although they 
+ * are affected by the execution of the current instruction, they commit 
+ * to their new values only in the next time unit. If reset=1 then the 
+ * CPU jumps to address 0 (i.e. sets pc=0 in next time unit) rather 
+ * than to the address resulting from executing the current instruction. 
+ */
+
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset=1) or continue executing
+                         // the current program (reset=0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+    // Put your code here:
+
+    // Decoder
+
+    Mux16(a=instruction,b=false,sel=false,out[15]=itype,out[12]=mtype, 
+        out[11]=izx,out[10]=inx,out[9]=izy,out[8]=iny,out[7]=if,out[6]=ino, // COMP
+        out[5]=destA,out[4]=destD,out[3]=destM, // DEST
+        out[0]=gt0,out[1]=equ0,out[2]=lt0); // JMP
+
+    //writeM
+
+    And(a=destM,b=itype,out=writeM);
+
+    // A register
+
+    Mux16(a=instruction,b=outAlu,sel=itype,out=ainput);
+    Not(in=itype,out=nitype);
+    Or(a=nitype,b=destA,out=loada);
+    ARegister(in=ainput,load=loada,out=outputa,out[0..14]=addressM);
+
+    // Register D
+
+    And(a=itype,b=destD,out=edestD); // effective Dest bit
+    DRegister(in=outAlu,load=edestD,out=outputb);
+
+    // Counter
+
+    //code to select load
+
+    Not(in=ong,out=nng);
+    Not(in=ozr,out=nzr);
+    And(a=lt0,b=ong,out=infz);
+    And(a=equ0,b=ozr,out=eqz);
+    And(a=gt0,b=nzr,out=egt0);
+    And(a=egt0,b=nng,out=supz);
+    Or8Way(in[0]=infz,in[1]=eqz,in[2]=supz,in[3..7]=false,out=tl);
+    And(a=itype,b=tl,out=l);
+    
+    //PC
+
+    PC(in=outputa,inc=true,load=l,reset=reset,out[0..14]=pc);
+
+    // M or A
+
+    Mux16(a=outputa,b=inM,sel=mtype,out=aluinput);
+
+    //ALU
+
+    ALU(x=outputb,y=aluinput,zx=izx,nx=inx,zy=izy,ny=iny,f=if,no=ino,out=outAlu,out=outM,zr=ozr,ng=ong);
+}

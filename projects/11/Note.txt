@@ -1,0 +1,19 @@
+Bug:
+
+Infinite loop because of an inifinite loop
+
+infinte loop mean that there are no more token to consume
+
+maybe the uop value is kept across the loop
+
+problem is more general than loop
+
+print "int:" + str(self.input.tokenType()) if token type is const
+
+while(op in list_op) op is not modified by operation in loop --> infinite loop
+
+Problem:
+
+Why function are not compiled? (maybe it is not reached yet)
+
+How to handle error in the code?
